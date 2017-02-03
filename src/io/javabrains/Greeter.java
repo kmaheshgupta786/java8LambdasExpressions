@@ -1,4 +1,4 @@
-package io.javabrains;
+package src.io.javabrains;
 
 public class Greeter {
 

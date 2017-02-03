@@ -286,4 +286,279 @@ lengthOfStr2  5
 lengthOfStr3  10
 
 		
+--------------------------------------------------------------------------
+
+1.11 Runnable Using Lambdas
+
+Learn how lambda expressions can be backward compatible by passing a lambda expression to a class that's been around since JDK 1 - The Thread and Runnable types.
+
+
+explained how to run thread using lambda expression.
+
+RunnableExample.java
+--------------------	
+public class RunnableExample {
+
+	public static void main(String[] args) {
 		
+		// java 7 
+		Thread myThread = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				System.out.println("Printed inside Runnable Ananymous inner class");
+				
+			}
+			
+		});
+		
+		myThread.run();
+		
+		
+		// java 8
+		Thread myLambdaThread = new Thread(() -> System.out.println("Printed using Lamdbda Expression"));
+		myLambdaThread.run();
+		
+	}
+
+}	
+
+
+console output :
+Printed inside Runnable Ananymous inner class
+Printed using Lamdbda Expression
+
+
+* Functional interfaces nothing but the interfaces which has only one abstract method.
+eg: Runnable interface
+	
+--------------------------------------------------------------------------
+
+1.12 Functional Interface
+
+Learn about the term functional interface and how it describes the type of interface you have already learned by now. Also use the @FunctionalInterface annotation to mark such interfaces.
+
+
+* Functional interfaces nothing but the interfaces which has only one abstract method.
+eg: Runnable interface
+
+
+@FunctionalInterface
+public interface Greeting {
+
+		public void perform();
+		
+}
+
+In above interface if you add one more abstract method, compiler will give error.
+
+@FunctionalInterface
+public interface Greeting {  // at interface name it gives error, msg : invalid @FunctionalInterface annotaion ; Greeting is not a functional interface . To work it out have to remove either one of the method.
+
+		public void perform();
+		public void perform2();
+		
+}
+
+--------------------------------------------------------------------------
+
+1.13 Lambda Exercise
+
+Put the knowledge you've learnt so far to the test! Here's an exercise for you to try out. Solution in the next tutorial.
+
+
+1.14 Lambda Exercise Solution
+
+In this video, I walk through the solution to the exercise in the previous video. I walk you through the solution both in Java 7 and using the Java 8 lambda approach.
+
+
+Unit1ExcersieSolutionJava7.java
+-------------------------------
+
+public class Unit1ExcersieSolutionJava7 {
+
+	public static void main(String[] args) {
+		List<Person> people = Arrays.asList(
+				new Person("Charles", "Dickens", 60),
+				new Person("Lewis", "Carroll", 42),
+				new Person("Thomas", "Carlyle", 51),
+				new Person("Charlotte", "Bronte", 45),
+				new Person("Mathew", "Arnold", 39)
+				);
+
+	
+
+	//setp 1 : sort list by last name
+	Collections.sort(people, new Comparator<Person>(){
+
+		@Override
+		public int compare(Person o1, Person o2) {
+			return o1.getLastName().compareTo(o2.getLastName());
+		}
+	});
+	
+	//step 2 : create a method that prints all elements in the list
+	System.out.println("Printing all list : ");
+	printAll(people);
+	
+	//step 3 : create a method that prints all people that have last name begins with C
+	System.out.println("Way 1 : printing people : last name starts with C :");
+	printLastNameBeginningWithC(people);
+	
+	//step 3.1 
+	System.out.println("Way 2 : printing people : last name starts with C :");
+	printConditionally(people, new Condition(){
+
+		@Override
+		public boolean test(Person p) {
+			return p.getLastName().startsWith("C");
+		}
+		
+	});
+
+	}
+
+	private static void printConditionally(List<Person> people, Condition condition) {
+		for(Person p : people){
+			if(condition.test(p)){
+				System.out.println(p);
+			}			
+		}
+		
+	}
+
+	private static void printLastNameBeginningWithC(List<Person> people) {
+		for(Person p : people){
+			if(p.getLastName().startsWith("C")){
+				System.out.println(p);
+			}			
+		}
+		
+	}
+
+	private static void printAll(List<Person> people) {
+		for(Person p : people){
+			System.out.println(p);
+		}
+		
+	}
+
+}
+
+interface Condition{
+	boolean test(Person p);
+}
+
+-----
+
+Unit1ExcersieSolutionJava8.java
+-------------------------------
+
+public class Unit1ExcersieSolutionJava8 {
+
+	public static void main(String[] args) {
+		List<Person> people = Arrays.asList(
+				new Person("Charles", "Dickens", 60),
+				new Person("Lewis", "Carroll", 42),
+				new Person("Thomas", "Carlyle", 51),
+				new Person("Charlotte", "Bronte", 45),
+				new Person("Mathew", "Arnold", 39)
+				);
+
+	
+
+	//setp 1 : sort list by last name
+	Collections.sort(people, (p1,p2) -> p1.getLastName().compareTo(p2.getLastName()));		
+			
+	
+	//step 2 : create a method that prints all elements in the list
+	System.out.println("Printing all list : ");
+	printConditionally(people, p -> true);	
+	
+	
+	//step 3.1 
+	System.out.println("Way 2 : printing people : last name starts with C :");
+	printConditionally(people, p -> p.getLastName().startsWith("C"));	
+
+	}
+
+	private static void printConditionally(List<Person> people, Condition condition) {
+		for(Person p : people){
+			if(condition.test(p)){
+				System.out.println(p);
+			}			
+		}
+		
+	}	
+}
+
+
+--------------------------------------------------------------------------
+
+2.1 Using Function Interfaces
+
+Let's look at some out-of-the-box functional interfaces that come with Java 8 that lets us write some lambda expressions without having to declare an interface first.
+
+
+check below code snippet of Unit1ExcersieSolutionJava8:
+
+private static void printConditionally(List<Person> people, Condition condition) {
+		for(Person p : people){
+			if(condition.test(p)){
+				System.out.println(p);
+			}			
+		}
+		
+	}	
+	
+Condition condition --> we are using this interface which is declared in Unit1ExcersieSolutionJava7.java file.
+And it using for to test the parameter is type of that class or not. to do the same
+task java8 has "Predicate" class.
+so pls check the predicate class functions, u can find test method.
+
+After replacing the Condition with Predicate class the code looks like
+	private static void printConditionally(List<Person> people, Predicate predicate) {
+		for(Person p : people){
+			if(predicate.test(p)){
+				System.out.println(p);
+			}			
+		}
+		
+	}	
+	
+the Predicate class defined in pkg "java.util.function.Predicate";
+
+--------------------------------------------------------------------------
+
+2.2 More Functional Interfaces
+
+Let's contine exploring functional interfaces with another example.
+
+Consumer - Functional interface, which accepts the object and not return any thing.
+
+updated file code :
+-----------------
+
+calling time:
+
+//step 2 : create a method that prints all elements in the list
+System.out.println("Printing all list : ");
+performConditionally(people, p -> true, p -> System.out.println(p));	
+	
+
+//method implementation logic	
+private static void performConditionally(List<Person> people, Predicate<Person> predicate, Consumer<Person> consumer) {
+		for(Person p : people){
+			if(predicate.test(p)){
+				consumer.accept(p);
+			}			
+		}
+		
+	}	
+	
+	
+--------------------------------------------------------------------------
+	
+2.3 Exception Handling in Lambdas
+
+This video covers the problem of exception handling in lambdas and how the obvious approach is not very elegant.	
